@@ -1,6 +1,11 @@
 #stage1
 FROM registry.access.redhat.com/ubi8/openjdk-11:1.15-1.1679485219 as builder
-COPY . .
+
+COPY src src
+COPY .classpath .
+COPY .project .
+COPY pom.xml .
+
 RUN mvn clean package
 
 #stage2
@@ -8,10 +13,12 @@ FROM registry.access.redhat.com/ubi8/openjdk-11-runtime:1.15-1.1679485252
 
 ENV JAR_NAME=camel-kafka-sample-2.5-SNAPSHOT
 
-COPY . .
+#COPY . .
+COPY truststore.jks .
+
 COPY --from=builder /home/jboss/target .
 ENV JAR_FILE=/home/jboss/${JAR_NAME}.jar
 RUN cp ${JAR_FILE} /home/jboss/app.jar
-EXPOSE 8080
+EXPOSE 8080 8081
 ENTRYPOINT ["java","-jar","/home/jboss/app.jar","-Djava.net.preferIPv4Stack=true -Dspring.cloud.kubernetes.enabled=false"]
 

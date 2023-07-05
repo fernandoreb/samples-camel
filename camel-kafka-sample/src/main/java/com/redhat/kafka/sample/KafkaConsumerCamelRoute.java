@@ -3,8 +3,6 @@ package com.redhat.kafka.sample;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.apache.camel.builder.DefaultErrorHandlerBuilder;
 
 @Component
 public class KafkaConsumerCamelRoute extends RouteBuilder {
@@ -12,10 +10,6 @@ public class KafkaConsumerCamelRoute extends RouteBuilder {
     @Autowired
 	private DataProcessor dataProcessor;
 
-    @Autowired
-    @Qualifier("errorDlqBuilder")
-    private DefaultErrorHandlerBuilder errorDlqBuilder;
-    
     @Override
     public void configure() throws Exception {
 
@@ -35,12 +29,8 @@ public class KafkaConsumerCamelRoute extends RouteBuilder {
             .process(dataProcessor).id("data-processor")
             .log("KafkaConsumerCamelRoute file: {{file.diretory}}/${header.CamelFileName}")
             .to("file:{{file.diretory}}")
-            //.to("sftp://{{ftp.user}}@{{ftp.server}}:{{ftp.port}}/{{ftp.directory}}?password={{ftp.password}}")
+            .to("sftp://{{ftp.user}}@{{ftp.server}}:{{ftp.port}}/{{ftp.directory}}?password={{ftp.password}}")
             .log("KafkaConsumerCamelRoute ended");
-
-        
-        from("direct:error")
-            .log("erro ao processar rota");
        
     }
 

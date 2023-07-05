@@ -48,6 +48,7 @@ ftp.directory=${FTP_DIRECTORY:upload}
 5 - Rodando um FTP local
 ~~~
 podman run --rm -p 2222:22 atmoz/sftp foo:pass:::upload
+sftp -P 2222 foo@localhost
 ~~~
 
 6 - Executando local
@@ -62,6 +63,12 @@ UPDATE customers SET first_name='Anne Marie' WHERE id=1004;
 UPDATE customers SET first_name='Anne' WHERE id=1004;
 ~~~
 
+8 - Hawtio   
+Abrir uma página   
+~~~
+http://localhost:8081/actuator/hawtio
+~~~
+
 ## Montando a Solução no Openshift
 
 1. Crie o projeto abaixo:
@@ -71,7 +78,7 @@ oc new-project amq-camel
 
 2. Criar o build da aplicação
 ~~~
-oc new-build --binary --strategy=docker --name camel-kafka
+oc new-build --binary --strategy=docker --name camel-kafka -n amq-camel
 ~~~
 
 Teremos uma saída similar:
@@ -89,7 +96,7 @@ Teremos uma saída similar:
 3. Iniciar o build a aplicação
 ~~~
 rm -r camel-kafka-sample/target
-oc start-build camel-kafka --from-dir . -F
+oc start-build camel-kafka --from-dir . -F -n amq-camel
 ~~~
 
 Teremos uma saída similar:
@@ -112,7 +119,12 @@ Push successful
 
 4. Criar a aplicação
 ~~~
-oc new-app camel-kafka
+oc new-app camel-kafka \
+-e KAFKA_BOOTSTRAP=amq-streams-sample-kafka-bootstrap-infra-amqstreams.apps.ocp4.example.com:443 \
+-e KAFKA_TRUSTSTORE_LOCATION=/home/jboss/truststore.jks \
+-e KAFKA_TRUSTSTORE_PASSWORD=password \
+-e KAFKA_TRUSTSTORE_PASSWORD=password \
+-e FILE_DIRECTORY=/home/jboss
 ~~~
 
 Pod criado.
