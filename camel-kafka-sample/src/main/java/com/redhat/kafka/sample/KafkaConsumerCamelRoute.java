@@ -21,8 +21,6 @@ public class KafkaConsumerCamelRoute extends RouteBuilder {
 
         //hawtio
         //http://localhost:8081/actuator/hawtio/camel/routeDiagram?
-        errorHandler(errorDlqBuilder);
-        
         from("kafka:{{topic.name.consumer}}?brokers={{kafka.bootstrap-servers}}"+
                                            "&securityProtocol={{kafka.security.protocol}}"+
                                            "&saslMechanism={{kafka.consumer.properties.sasl.mechanism}}"+
@@ -37,9 +35,7 @@ public class KafkaConsumerCamelRoute extends RouteBuilder {
             .process(dataProcessor).id("data-processor")
             .log("KafkaConsumerCamelRoute file: {{file.diretory}}/${header.CamelFileName}")
             .to("file:{{file.diretory}}")
-            .to("sftp://{{ftp.user}}@{{ftp.server}}:{{ftp.port}}/{{ftp.directory}}?password={{ftp.password}}")
-            .onException(Exception.class)
-            .handled(true)
+            //.to("sftp://{{ftp.user}}@{{ftp.server}}:{{ftp.port}}/{{ftp.directory}}?password={{ftp.password}}")
             .log("KafkaConsumerCamelRoute ended");
 
         

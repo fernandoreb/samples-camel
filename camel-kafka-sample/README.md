@@ -1,4 +1,4 @@
-# Camel Usando Quartz2, Jdbc e Http com Spring Boot - Openshift
+# Camel Usando Kafka, file e FTP com Spring Boot
 
 Este projeto é um exemplo utilizando os componente camels *kafka* para buscar dados em um tópico, o componente *file* para gravar um arquivo em um diretório e por fim, o componente FTP enviar o arquivo via FTP.   
 
