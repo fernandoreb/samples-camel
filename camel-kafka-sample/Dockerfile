@@ -13,7 +13,6 @@ FROM registry.access.redhat.com/ubi8/openjdk-11-runtime:1.15-1.1679485252
 
 ENV JAR_NAME=camel-kafka-sample-2.5-SNAPSHOT
 
-#COPY . .
 COPY truststore.jks .
 
 COPY --from=builder /home/jboss/target .

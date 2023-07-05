@@ -19,7 +19,7 @@ oc new-project batch
 
 2. Criar o build da aplicação
 ~~~
-oc new-build --binary --strategy=docker --name camel-batch
+oc new-build --binary --strategy=docker --name camel-batch -n batch
 ~~~
 
 Teremos uma saída similar:
@@ -38,12 +38,12 @@ Teremos uma saída similar:
 
 Remover a pasta target
 ~~~
-rm -r camel-batch-sample/target
+rm -r camel-batch-sample/target 
 ~~~
 
 ~~~
 cd camel-batch-sample
-oc start-build camel-batch --from-dir . -F
+oc start-build camel-batch --from-dir . -F -n batch
 ~~~
 
 Teremos uma saída similar:
@@ -66,7 +66,7 @@ Push successful
 
 4. Criar a aplicação
 ~~~
-oc new-app camel-batch
+oc new-app camel-batch -n batch
 ~~~
 
 Pod criado.
