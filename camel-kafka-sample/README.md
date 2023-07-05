@@ -128,16 +128,15 @@ Pod criado.
 ~~~
 oc get pods
 NAME                                   READY   STATUS      RESTARTS   AGE
-camel-batch-1-build                     0/1     Completed   0          8m1s
-camel-batch-85d44fd56d-6dl6l            1/1     Running     0          40s
+camel-kafka-1-build                     0/1     Completed   0          8m1s
+camel-kafka-85d44fd56d-6dl6l            1/1     Running     0          40s
 ~~~
 
 Se olharmos os logs da aplicação, poderemos ver algo como:
 ~~~
-14:23:40.000 [DefaultQuartzScheduler-camelBatchSample_Worker-6] INFO get-string-random - job camel sample started
-14:23:40.002 [DefaultQuartzScheduler-camelBatchSample_Worker-6] INFO com.redhat.batch.sample.SQLProcessor - String randomica: AQibZ
-14:23:40.003 [DefaultQuartzScheduler-camelBatchSample_Worker-6] INFO com.redhat.batch.sample.SQLProcessor - Query a ser executada:INSERT INTO RANDOMICO(ID, DESCRICAO, VALOR) VALUES ('14150', 'Randomico', 'AQibZ')
-14:23:40.004 [DefaultQuartzScheduler-camelBatchSample_Worker-6] INFO get-string-random - job camel sample finished
+17:45:43.228 [Camel (CamelKafkaSpring) thread #1 - KafkaConsumer[dbserver1.inventory.customers]] INFO o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-springboot-1, groupId=springboot] Setting offset for partition dbserver1.inventory.customers-2 to the committed offset FetchPosition{offset=163, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[amq-streams-sample-kafka-0-infra-amqstreams.apps.ocp4.example.com:443 (id: 0 rack: null)], epoch=24}}
+17:45:43.228 [Camel (CamelKafkaSpring) thread #1 - KafkaConsumer[dbserver1.inventory.customers]] INFO o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=consumer-springboot-1, groupId=springboot] Setting offset for partition dbserver1.inventory.customers-1 to the committed offset FetchPosition{offset=4, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[amq-streams-sample-kafka-1-infra-amqstreams.apps.ocp4.example.com:443 (id: 1 rack: null)], epoch=28}}
+17:45:43.228 [Camel (CamelKafkaSpring) thread #1 - KafkaConsumer[dbserver1.inventory.customers]] INFO o.a.k.c.c.i.ConsumerCoordinator - [Consumer clientId=co
 ~~~
 
 ## Entendendo o código da aplicação
