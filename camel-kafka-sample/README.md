@@ -11,7 +11,6 @@ Este projeto é um exemplo utilizando os componente camels *kafka* para buscar d
 ~~~
 rm camel-kafka-sample/ca.crt
 rm camel-kafka-sample/truststore.jks
-rm -r camel-kafka-sample/target
 ~~~
 
 2 - Criar uma keystore adicionando o certificado do cluster (substituir o nome da secret se necessário)
@@ -95,7 +94,6 @@ Teremos uma saída similar:
 
 3. Iniciar o build a aplicação
 ~~~
-rm -r camel-kafka-sample/target
 oc start-build camel-kafka --from-dir . -F -n amq-camel
 ~~~
 
@@ -122,7 +120,6 @@ Push successful
 oc new-app camel-kafka \
 -e KAFKA_BOOTSTRAP=amq-streams-sample-kafka-bootstrap-infra-amqstreams.apps.ocp4.example.com:443 \
 -e KAFKA_TRUSTSTORE_LOCATION=/home/jboss/truststore.jks \
--e KAFKA_TRUSTSTORE_PASSWORD=password \
 -e KAFKA_TRUSTSTORE_PASSWORD=password \
 -e FILE_DIRECTORY=/home/jboss
 ~~~
