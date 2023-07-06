@@ -34,6 +34,8 @@ mvn spring-boot:run
 
 ## Montando a Solução no Openshift
 
+Versão testada do Openshift: 4.13
+
 1. Crie o projeto abaixo:
 
 ~~~

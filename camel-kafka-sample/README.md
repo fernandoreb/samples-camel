@@ -5,21 +5,35 @@ Este projeto é um exemplo utilizando os componente camels *kafka* para buscar d
 ## Visão Geral da Solução
 ![architecture](./assets/01.png)
 
-## Rodando a Solução Local
+Como premissa, um cluster kafka deve estar operacional, com um tópico criado e um produtor para gerar dados.   
 
+## Execução local
+
+Versão java utilizada:   
+~~~
+openjdk 11.0.16 2022-07-19 LTS
+OpenJDK Runtime Environment (Red_Hat-11.0.16.0.8-1.el7openjdkportable) (build 11.0.16+8-LTS)
+OpenJDK 64-Bit Server VM (Red_Hat-11.0.16.0.8-1.el7openjdkportable) (build 11.0.16+8-LTS, mixed mode)
+~~~
+   
+Versão do maven utilizada:   
+~~~
+Apache Maven 3.8.6
+~~~
+   
 1 - Remover, se houver, os certificados e keystore antigos
 ~~~
 rm camel-kafka-sample/ca.crt
 rm camel-kafka-sample/truststore.jks
 ~~~
-
-2 - Criar uma keystore adicionando o certificado do cluster (substituir o nome da secret se necessário)
+   
+2 - Criar uma keystore adicionando o certificado do cluster (substituir o nome da secret e namespace se necessário)
 ~~~
 cd camel-kafka-sample
 oc extract -n infra-amqstreams secret/amq-streams-sample-cluster-ca-cert --keys=ca.crt --to=- > ca.crt
 keytool -import -trustcacerts -alias root -file ca.crt -keystore truststore.jks -storepass password -noprompt
 ~~~
-
+   
 3 - Atualizar as configurações do kafka em camel-kafka-sample/src/main/resources/application.properties
 ~~~
 kafka.consumer.properties.sasl.mechanism=SCRAM-SHA-512
@@ -33,7 +47,7 @@ kafka.consumer.count=1
 kafka.consumer.auto-offset-reset=earliest
 topic.name.consumer=dbserver1.inventory.customers
 ~~~
-
+   
 4 - Atualizar as configurações do FTP em camel-kafka-sample/src/main/resources/application.properties (se não estiver rodando local)
 ~~~
 ## FTP Properties
@@ -43,7 +57,7 @@ ftp.user=${FTP_USER:foo}
 ftp.password=${FTP_PASSWORD:pass}
 ftp.directory=${FTP_DIRECTORY:upload}
 ~~~
-
+   
 5 - Rodando um FTP local
 ~~~
 podman run --rm -p 2222:22 atmoz/sftp foo:pass:::upload
@@ -55,7 +69,9 @@ sftp -P 2222 foo@localhost
 mvn spring-boot:run
 ~~~
 
-7 - Produzir um dado no tópico
+7 - Produzir um dado no tópico   
+
+Utilizamos um produtor baseado em CDC com Debezium e uma base MySQL.
 ~~~
 mysql -u mysqluser -pmysqlpw inventory
 UPDATE customers SET first_name='Anne Marie' WHERE id=1004;
@@ -63,13 +79,15 @@ UPDATE customers SET first_name='Anne' WHERE id=1004;
 ~~~
 
 8 - Hawtio   
-Abrir uma página   
+Abrir uma página, com a URL abaixo, para explorar as informações que o HawtIO entrega.   
 ~~~
 http://localhost:8081/actuator/hawtio
 ~~~
 
 ## Montando a Solução no Openshift
-
+  
+Versão testada do Openshift: 4.13
+  
 1. Crie o projeto abaixo:
 ~~~
 oc new-project amq-camel
@@ -115,7 +133,7 @@ Successfully pushed image-registry.openshift-image-registry.svc:5000/batch/camel
 Push successful
 ~~~ 
 
-4. Criar a aplicação
+4. Criar a aplicação - Ajuste se necessário as variáveis de ambiente   
 ~~~
 oc new-app camel-kafka \
 -e KAFKA_BOOTSTRAP=amq-streams-sample-kafka-bootstrap-infra-amqstreams.apps.ocp4.example.com:443 \
@@ -168,10 +186,16 @@ public void configure() throws Exception {
 ~~~
 
 1 - Componente kafka para consumir dados do tópico   
-2 - Chamada ao componente DataProcessor para configurar o nome do Arquivo   
-3 - Chamada ao componente file para criar o arquivo contendo a mensagem   
-4 - Chamada ao componente sftp para enviar o arquivo ao servidor FTP   
+https://access.redhat.com/webassets/avalon/d/red_hat_integration/2022.q2/apache-camel-3.14-doc/components/3.14.x/kafka-component.html   
 
+2 - Chamada ao componente DataProcessor para configurar o nome do Arquivo   
+   
+3 - Chamada ao componente file para criar o arquivo contendo a mensagem   
+https://access.redhat.com/webassets/avalon/d/red_hat_integration/2022.q2/apache-camel-3.14-doc/components/3.14.x/file-component.html
+   
+4 - Chamada ao componente sftp para enviar o arquivo ao servidor FTP   
+https://access.redhat.com/webassets/avalon/d/red_hat_integration/2022.q2/apache-camel-3.14-doc/components/3.14.x/ftp-component.html
+   
 **DataProcessor** - Nesta classe definimos o componente DataProcessor. Ele faz o log da mensagem e define o nome do arquivo a ser criado.
 
 ~~~
