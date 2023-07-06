@@ -5,6 +5,9 @@ import java.security.SecureRandom;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Exposing an API using spring
+ */
 @RestController
 public class StringRest {
 

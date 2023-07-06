@@ -1,13 +1,36 @@
-# Camel Usando Quartz2, Jdbc e Http com Spring Boot - Openshift
+# Camel Usando Quartz, Jdbc e Http com Spring Boot
 
-Este projeto é um exemplo utilizando o componente camel *quartz2* para de tempos em tempos buscar dados em um endpoint, usando o componente *http* e salvar em uma base de dados, usando o componente *jdbc*. O componente *quartz2* utiliza um cron para agendar a sua execução no Openshift.   
+Este projeto é um exemplo utilizando os componentes camel *quartz* para de tempos em tempos buscar dados em um endpoint, o componente *http* para fazer uma chamada a um endpoint e salvar em uma base de dados, usando o componente *jdbc*. O componente *quartz* utiliza um cron para agendar a sua execução.   
 
 ## Visão Geral da Solução
 ![architecture](./assets/01.png)
 
-Neste cenário, a aplicação irá chamar um endpoint que gera strings randomicas a cada 2 segundos e guardar em uma base H2. Criamos o endpoint que gera as Strings randômicas dentro da própria aplicação, evitando chamar algum serviço externo que possa ou não estar disponível.
+Neste cenário, a aplicação irá chamar um endpoint que gera strings randomicas a cada 2 segundos e guardar em uma base H2. Criamos o endpoint que gera as Strings randômicas dentro da própria aplicação, evitando chamar algum serviço externo que possa ou não estar disponível.   
+
+H2 é uma base relacional escrita em Java. Ela é disk-based ou in-memory.    
+
+https://www.h2database.com/html/main.html    
 
 **Esta solução pode ser utilizada como um solução batch.**   
+
+## Execução local
+
+Versão java utilizada:   
+~~~
+openjdk 11.0.16 2022-07-19 LTS
+OpenJDK Runtime Environment (Red_Hat-11.0.16.0.8-1.el7openjdkportable) (build 11.0.16+8-LTS)
+OpenJDK 64-Bit Server VM (Red_Hat-11.0.16.0.8-1.el7openjdkportable) (build 11.0.16+8-LTS, mixed mode)
+~~~
+   
+Versão do maven utilizada:   
+~~~
+Apache Maven 3.8.6
+~~~
+   
+Executando local:   
+~~~
+mvn spring-boot:run
+~~~
 
 ## Montando a Solução no Openshift
 
@@ -17,7 +40,7 @@ Neste cenário, a aplicação irá chamar um endpoint que gera strings randomica
 oc new-project batch
 ~~~
 
-2. Criar o build da aplicação
+2. Crie o build da aplicação
 ~~~
 oc new-build --binary --strategy=docker --name camel-batch -n batch
 ~~~
@@ -34,7 +57,7 @@ Teremos uma saída similar:
 --> Success
 ~~~ 
 
-3. Iniciar o build a aplicação
+3. Inicie o build a aplicação
 
 Remover a pasta target
 ~~~
@@ -64,14 +87,14 @@ Successfully pushed image-registry.openshift-image-registry.svc:5000/batch/camel
 Push successful
 ~~~ 
 
-4. Criar a aplicação
+4. Crie a aplicação
 ~~~
 oc new-app camel-batch -n batch
 ~~~
 
 Pod criado.
 ~~~
-oc get pods
+oc get pods -n batch
 NAME                                   READY   STATUS      RESTARTS   AGE
 camel-batch-1-build                     0/1     Completed   0          8m1s
 camel-batch-85d44fd56d-6dl6l            1/1     Running     0          40s
@@ -108,9 +131,15 @@ public void configure() throws Exception {
 ~~~
 
 1 - Componente quartz. A parametrização do cron está no application.properties   
+https://access.redhat.com/webassets/avalon/d/red_hat_integration/2022.q2/apache-camel-3.14-doc/components/3.14.x/quartz-component.html   
+
 2 - Chamada ao componente http para a rota parametrizada api.random também no application.properties   
+https://access.redhat.com/webassets/avalon/d/red_hat_integration/2022.q2/apache-camel-3.14-doc/components/3.14.x/http-component.html   
+
 3 - Chamada ao componente SQLProcessor para montar a query com a String recebida   
+   
 4 - Chamada ao componente jdbc para executar a query. As configurações estão no application.properties   
+https://access.redhat.com/webassets/avalon/d/red_hat_integration/2022.q2/apache-camel-3.14-doc/components/3.14.x/sql-component.html#jdbc-component.adoc   
 
 **SQLProcessor** - Nesta classe definimos o componente SQLProcessor. Ele recebe a String randômica e monta query.
 
