@@ -38,13 +38,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-             <dependency>
-            <groupId>io.hawt</groupId>
-        <artifactId>hawtio-bom</artifactId>
-        <version>${io.hawt-version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
+            <dependency>
+                <groupId>io.hawt</groupId>
+                <artifactId>hawtio-bom</artifactId>
+                <version>${io.hawt-version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -80,7 +80,7 @@
             <artifactId>camel-http-starter</artifactId>
         </dependency>
 
-         <dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
@@ -104,15 +104,14 @@
             <groupId>io.hawt</groupId>
             <artifactId>hawtio-springboot</artifactId>
         </dependency>
-
-                <!--
-      This dependency is mandatory for enabling Camel management
-      via JMX / Hawtio.
-    -->
-    <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-management</artifactId>
-    </dependency>
+        <!--
+        This dependency is mandatory for enabling Camel management
+        via JMX / Hawtio.
+        -->
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-management</artifactId>
+        </dependency>
 
 
     </dependencies>
@@ -128,7 +127,7 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
