@@ -30,7 +30,7 @@ public class KafkaConsumerCamelRoute extends RouteBuilder {
             .log("KafkaConsumerCamelRoute file: {{file.diretory}}/${header.CamelFileName}")
             .to("file:{{file.diretory}}")
             //.to("sftp://{{ftp.user}}@{{ftp.server}}:{{ftp.port}}/{{ftp.directory}}?password={{ftp.password}}")
-            .to("sftp://{{ftp.user}}@{{ftp.server}}:{{ftp.port}}/{{ftp.directory}}?password={{ftp.password}}&knownHostsFile=/home/fguimara/.ssh/known_hosts&strictHostKeyChecking=no")
+            //.to("sftp://{{ftp.user}}@{{ftp.server}}:{{ftp.port}}/{{ftp.directory}}?password={{ftp.password}}&knownHostsFile=/home/fguimara/.ssh/known_hosts&strictHostKeyChecking=no")
             .log("KafkaConsumerCamelRoute ended");
        
     }

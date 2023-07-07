@@ -7,6 +7,8 @@ Este projeto é um exemplo utilizando os componente camels *kafka* para buscar d
 
 Como premissa, um cluster kafka deve estar operacional, com um tópico criado e um produtor para gerar dados.   
 
+Para este exemplo, um cluster com Debezium connector com uma base MySQL.   
+
 ## Execução local
 
 Versão java utilizada:   
@@ -21,6 +23,8 @@ Versão do maven utilizada:
 Apache Maven 3.8.6
 ~~~
    
+**Passos**   
+
 1 - Remover, se houver, os certificados e keystore antigos
 ~~~
 rm camel-kafka-sample/ca.crt
@@ -136,9 +140,10 @@ Push successful
 4. Criar a aplicação - Ajuste se necessário as variáveis de ambiente   
 ~~~
 oc new-app camel-kafka \
--e KAFKA_BOOTSTRAP=amq-streams-sample-kafka-bootstrap-infra-amqstreams.apps.ocp4.example.com:443 \
+-e KAFKA_BOOTSTRAP=amq-streams-sample-kafka-bootstrap.infra-amqstreams.svc.cluster.local:9093 \
 -e KAFKA_TRUSTSTORE_LOCATION=/home/jboss/truststore.jks \
 -e KAFKA_TRUSTSTORE_PASSWORD=password \
+-e KAFKA_USER_PASSWORD=Ja8e07dZmwS8UUZLBsYQDY8Cortpmj1B \
 -e FILE_DIRECTORY=/home/jboss
 ~~~
 

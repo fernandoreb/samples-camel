@@ -61,11 +61,6 @@ Teremos uma saída similar:
 
 3. Inicie o build a aplicação
 
-Remover a pasta target
-~~~
-rm -r camel-batch-sample/target 
-~~~
-
 ~~~
 cd camel-batch-sample
 oc start-build camel-batch --from-dir . -F -n batch
