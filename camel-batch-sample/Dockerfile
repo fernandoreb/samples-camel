@@ -2,11 +2,12 @@
 FROM registry.access.redhat.com/ubi8/openjdk-11:1.15-1.1679485219 as builder
 
 COPY src src
+COPY configuration configuration
 #COPY .classpath .
 #COPY .project .
 COPY pom.xml .
 
-RUN mvn clean package
+RUN mvn --settings configuration/settings.xml clean package
 
 #stage2 - make final image
 FROM registry.access.redhat.com/ubi8/openjdk-11-runtime:1.15-1.1679485252
